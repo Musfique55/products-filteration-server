@@ -8,7 +8,7 @@ app.use(express.json());
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jaoth1x.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -30,7 +30,6 @@ async function run() {
         const page = (parseInt(req.query.page)-1);
         const size = parseInt(req.query.size);
         const skipped = page * size;
-        console.log(page,size);
         const result = await productsDB.find().skip(skipped).limit(size).toArray();
         res.send(result); 
     })
@@ -40,6 +39,27 @@ async function run() {
     app.get('/products-count',async(req,res) => {
         const count = await productsDB.estimatedDocumentCount();
         res.send({count})
+    })
+
+    // products suggestion
+
+    app.get('/suggestions',async(req,res) => {
+        const query = req.query.q;
+        const result = await productsDB.find({productName : new RegExp(query,"i")}).limit(5).toArray();
+        res.send(result)
+    })
+    app.get('/search',async(req,res) => {
+        const query = req.query.q;
+        const result = await productsDB.findOne({productName : new RegExp(query,"i")});
+        res.send(result);
+    })
+    app.get('/search/:id',async(req,res) => {
+        const query = req.params.id;
+        const cursor = {
+            _id : new ObjectId(query)
+        } 
+        const result = await productsDB.findOne(cursor);
+        res.send(result)
     })
 
 
