@@ -29,9 +29,27 @@ async function run() {
     app.get('/products',async(req,res) => {
         const page = (parseInt(req.query.page)-1);
         const size = parseInt(req.query.size);
+        const category = req.query.category;
+        const type = req.query.type;
+        console.log(type);
+        const query = {};
+        if(type === 'brand'){
+            query.brandName = category;
+        }else if(type === 'brand'){
+            query.category = category;
+        }
+        
         const skipped = page * size;
-        const result = await productsDB.find().skip(skipped).limit(size).toArray();
+        const result = await productsDB.find(query).skip(skipped).limit(size).toArray();
         res.send(result); 
+    })
+    app.get('/products/:category',async(req,res) => {
+        const category = req.params.category;
+        const query = {
+            brandName : category
+        }
+        const result = await productsDB.find(query).toArray();
+        res.send(result);
     })
 
     // products count
