@@ -24,7 +24,23 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
+    const productsDB = client.db("ProductsDB").collection("products");
+   
+    app.get('/products',async(req,res) => {
+        const page = (parseInt(req.query.page)-1);
+        const size = parseInt(req.query.size);
+        const skipped = page * size;
+        console.log(page,size);
+        const result = await productsDB.find().skip(skipped).limit(size).toArray();
+        res.send(result); 
+    })
 
+    // products count
+
+    app.get('/products-count',async(req,res) => {
+        const count = await productsDB.estimatedDocumentCount();
+        res.send({count})
+    })
 
 
     // Send a ping to confirm a successful connection
