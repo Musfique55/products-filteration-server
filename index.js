@@ -9,6 +9,7 @@ app.use(express.json());
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const e = require('express');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jaoth1x.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -25,6 +26,11 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     const productsDB = client.db("ProductsDB").collection("products");
+
+    app.get('/allproducts',async(req,res) => {
+        const result = await productsDB.find().toArray();
+        res.send(result)
+    })
    
     app.get('/products',async(req,res) => {
         const page = (parseInt(req.query.page)-1);
@@ -32,20 +38,43 @@ async function run() {
         const category = req.query.category;
         const price = parseInt(req.query.price);
         const type = req.query.type;
+        const sort = req.query.sort;
+        
         let query = {};
-        if(type === 'brand' || price > 1){
-            query = {brandName : category};
-            query = {price : { $gt : price}}
-        }else if(type === 'category' || price > 1){
-            query = {
-                category : category  
-            };
-             query = {price : {$gt : price}}
-            
+    
+            if(category && type === 'brand'){
+                query = {
+                    brandName : category,
+                    price : { $gt : price}
+                };
+            }else if(category && type === 'category'){
+                query = {
+                    category : category ,
+                    price : { $gt : price}
+                };
+            }
+            else{
+               query = { price : { $gt : price} }
+            }
+        
+        let options = {} 
+        
+        if(sort === 'pricelow'){
+            options = {
+                sort :{ price : 1}
+            }
+        }else if(sort === 'pricehigh'){
+            options = {
+                sort :{ price : -1}
+            }
+        }else if(sort === 'date'){
+            options = {
+                sort : {creationDate : -1}
+            }
         }
         
         const skipped = page * size;
-        const result = await productsDB.find(query).skip(skipped).limit(size).toArray();
+        const result = await productsDB.find(query,options).skip(skipped).limit(size).toArray();
         res.send(result); 
     })
     app.get('/products/:category',async(req,res) => {
