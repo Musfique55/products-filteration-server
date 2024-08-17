@@ -30,13 +30,18 @@ async function run() {
         const page = (parseInt(req.query.page)-1);
         const size = parseInt(req.query.size);
         const category = req.query.category;
+        const price = parseInt(req.query.price);
         const type = req.query.type;
-        console.log(type);
-        const query = {};
-        if(type === 'brand'){
-            query.brandName = category;
-        }else if(type === 'brand'){
-            query.category = category;
+        let query = {};
+        if(type === 'brand' || price > 1){
+            query = {brandName : category};
+            query = {price : { $gt : price}}
+        }else if(type === 'category' || price > 1){
+            query = {
+                category : category  
+            };
+             query = {price : {$gt : price}}
+            
         }
         
         const skipped = page * size;
