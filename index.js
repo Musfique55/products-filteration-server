@@ -3,7 +3,15 @@ const app = express();
 const port = process.env.PORT || 3000;
 const cors = require('cors');
 require('dotenv').config();
-app.use(cors());
+
+const corsOptions = {
+  origin: ['https://product-filteration.web.app'],
+  methods: ['GET,HEAD,PUT,PATCH,POST,DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 
