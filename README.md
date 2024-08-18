@@ -19,7 +19,7 @@ This is the backend for a fullstack MERN-based single-page website that supports
 ## Installation
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/Musfique55/products-filteration.git
+   https://github.com/Musfique55/products-filteration-server.git
    cd frontend-repo
 2. **Install Dependencies**
    ```bash
@@ -28,9 +28,9 @@ This is the backend for a fullstack MERN-based single-page website that supports
 3. **Environment Variables**
     Create a .env file in the root directory of your project and add the following environment variables:
 
-MONGODB_URI=mongodb://localhost:27017/your-database-name
-PORT=3000
-Replace your-database-name with the name you want for your MongoDB database.
+    MONGODB_URI=mongodb://localhost:27017/your-database-name
+    PORT=3000
+    Replace your-database-name with the name you want for your MongoDB database.
 
 4. **Start the Server**
    ```bash
