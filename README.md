@@ -20,7 +20,7 @@ This is the backend for a fullstack MERN-based single-page website that supports
 1. **Clone the Repository**
    ```bash
    https://github.com/Musfique55/products-filteration-server.git
-   cd frontend-repo
+   cd backend-repo
 2. **Install Dependencies**
    ```bash
    npm install
